@@ -1,0 +1,281 @@
+config:
+  target: "http://127.0.0.1:3000/graphql"
+
+  phases:
+    - duration: 10
+      name: "Test phase"
+      arrivalRate: 20
+
+scenarios:
+  - name: "Contacts"
+    flow:
+      - post:
+          url: "/"
+          json:
+            query: |
+              query GetContactsInfoTable($getContactsArgs: GetContactsArgs!) {
+                getContacts(getContactsArgs: $getContactsArgs) {
+                  contacts {
+                    ...ContactInfoTable
+                    __typename
+                  }
+                  totalCount
+                  __typename
+                }
+              }
+
+              fragment ContactInfoTable on Contacts {
+                ...ContactInfo
+                tags {
+                  ...ContactTagsOutput
+                  __typename
+                }
+                contactNumbers {
+                  ...ContactNumber
+                  __typename
+                }
+                contactEmails {
+                  ...ContactEmail
+                  __typename
+                }
+                __typename
+              }
+
+              fragment ContactInfo on Contacts {
+                id
+                companyId
+                userId
+                name
+                title
+                company
+                industry
+                website
+                address
+                city
+                zip
+                state
+                country {
+                  ...Countries
+                  __typename
+                }
+                __typename
+              }
+
+              fragment Countries on Countries {
+                id
+                name
+                nameSk
+                countryCode
+                longName
+                iso3
+                callingCode
+                isInEu
+                enableCalls
+                isProhibited
+                __typename
+              }
+
+              fragment ContactTagsOutput on ContactTagsOutput {
+                contactTags {
+                  ...Tags
+                  __typename
+                }
+                onlyIntegrationTags {
+                  ...IntegrationTagsOutput
+                  __typename
+                }
+                __typename
+              }
+
+              fragment Tags on Tags {
+                id
+                name
+                created
+                usedInIntgr
+                __typename
+              }
+
+              fragment IntegrationTagsOutput on IntegrationTagsOutput {
+                serviceKey
+                integrationName
+                entity
+                externalUrl
+                usedInIntgr
+                intgrTable
+                tagId
+                name
+                __typename
+              }
+
+              fragment ContactNumber on ContactNumbers {
+                publicNumber
+                externalCountryCode
+                __typename
+              }
+
+              fragment ContactEmail on ContactEmails {
+                email
+                __typename
+              }
+            variables:
+              getContactsArgs:
+                limit: 15
+                offset: 0
+                # sortBy: "ID"
+                range:
+                  from: "1970-01-01"
+                  to: "2023-01-10"
+
+      - post:
+          url: "/"
+          json:
+            query: |
+              query GetGeneralSettings {
+                getGeneralSettings {
+                  ...GeneralCompanySettings
+                  __typename
+                }
+              }
+
+              fragment GeneralCompanySettings on Companies {
+                ...BasicSettings
+                ...Security
+                callTags {
+                  ...CallTag
+                  __typename
+                }
+                ...StatusesSettings
+                ...VisibilityOfCallsAndRecordings
+                ...VisibilityOfSMS
+                contactAttributeProperties {
+                  id
+                  title
+                  __typename
+                }
+                ...RealtimeCard
+                ...RealtimeDashboard
+                ...Wallboards
+                ...Statistics
+                afterCallWork
+                autoPickupsCompany {
+                  ...AutoPickUp
+                  __typename
+                }
+                __typename
+              }
+
+              fragment BasicSettings on Companies {
+                contactEmail
+                timezone
+                adminLocale
+                defaultCountryCode
+                mailbox
+                voicemail
+                attachVoicemail
+                showDnid
+                sendVoicemail
+                isMissedCallResolutionEnabled
+                ringingStrategy
+                voicemailGreeting {
+                  ...Greeting
+                  __typename
+                }
+                __typename
+              }
+
+              fragment Greeting on Greetings {
+                id
+                companyId
+                greetingType
+                internalName
+                basename
+                fileName
+                fileExt
+                fileMime
+                fileExists
+                country {
+                  ...Countries
+                  __typename
+                }
+                __typename
+              }
+
+              fragment Countries on Countries {
+                id
+                name
+                nameSk
+                countryCode
+                longName
+                iso3
+                callingCode
+                isInEu
+                enableCalls
+                isProhibited
+                __typename
+              }
+
+              fragment Security on Companies {
+                maxCallLength
+                __typename
+              }
+
+              fragment CallTag on CallTags {
+                id
+                color
+                name
+                callType
+                status
+                __typename
+              }
+
+              fragment StatusesSettings on Companies {
+                idleRule
+                __typename
+              }
+
+              fragment VisibilityOfCallsAndRecordings on Companies {
+                recordingInbound
+                recordingOutbound
+                recordingInternal
+                recordingAgentPausing
+                visibilityOfCallsByAgent
+                playingRecordingsByAgent
+                canDownloadRecordings
+                __typename
+              }
+
+              fragment VisibilityOfSMS on Companies {
+                visibilityOfSMSByAgent
+                __typename
+              }
+
+              fragment RealtimeCard on Companies {
+                isRealTimeCardActive
+                isIncomingCallNotificationActive
+                __typename
+              }
+
+              fragment RealtimeDashboard on Companies {
+                rdRefreshTime
+                rdStatsHoursBefore
+                rdThAvgWaitingTime
+                rdThAbandonRate
+                __typename
+              }
+
+              fragment Wallboards on Companies {
+                answeredCallsThreshold
+                abandonedCallsThreshold
+                __typename
+              }
+
+              fragment Statistics on Companies {
+                serviceLevelInbMaxRange
+                __typename
+              }
+
+              fragment AutoPickUp on AutoPickUpsCompany {
+                autoPickUpsDialed
+                autoPickUpsInbound
+                __typename
+              }

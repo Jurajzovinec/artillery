@@ -1,0 +1,19 @@
+{
+  "name": "dashboard-backend-load-test",
+  "version": "1.0.0",
+  "description": "``` npm install -g easygraphql-load-tester ```",
+  "main": "index.js",
+  "scripts": {
+    "graphql": "artillery run graphql.yml",
+    "health": "artillery run health.yml",
+    "survey": "artillery run survey.yml"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "artillery": "^2.0.0-27",
+    "easygraphql-load-tester": "^2.0.5",
+    "easygraphql-lt": "^1.0.4"
+  }
+}

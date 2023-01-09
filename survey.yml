@@ -1,0 +1,99 @@
+config:
+  target: "http://127.0.0.1:3000/graphql"
+  phases:
+    - duration: 10
+      name: "CampaignSurveyAnswer"
+      arrivalRate: 10
+
+scenarios:
+  - name: "CampaignSurveyAnswer"
+    flow:
+      - post:
+          url: "/"
+          json:
+            query: |
+              query getCampaignSurveyAnswers(
+                $getCampaignSurveyAnswersArgs: GetCampaignSurveyAnswersArgs!
+              ) {
+                getCampaignSurveyAnswers(
+                  getCampaignSurveyAnswersArgs: $getCampaignSurveyAnswersArgs
+                ) {
+                  campaignSurveyAnswers {
+                    id
+                    userId
+                    pdCampaignId
+                    callResult
+                    pdSurveyAnswerOptions {
+                      id
+                      answer
+                      pdSurveyOption {
+                        name
+                      }
+                      pdSurveyQuestion {
+                        id
+                        name
+                      }
+                    }
+                    contact {
+                      ...ContactInfoWithPhoneNumber
+                      __typename
+                    }
+                    user {
+                      ...UserInfoBasic
+                    }
+                    historyCall {
+                      durationTime
+                      id
+                      callid
+                      recorded
+                      callid
+                      billsec
+                      calldate
+                      cdrTransferFrom{
+                        id
+                      }
+                      dst
+                      callTypeOutput {
+                        type
+                        typeLabel
+                        icon
+                        colorClass
+                        __typename
+                      }
+                      callNumber {
+                        id
+                        countryId
+                      }
+                    }
+                  }
+                  totalCount
+                  __typename
+                }
+              }
+
+              fragment UserInfoBasic on Users {
+                id
+                firstname
+                lastname
+                fullName
+                serverRegionId
+                role
+                __typename
+              }
+
+
+              fragment ContactInfoWithPhoneNumber on Contacts {
+                id
+                name
+                companyId
+                __typename
+              }
+            variables:
+              getCampaignSurveyAnswersArgs:
+                id: 46327
+                range:
+                  from: "1970-01-01"
+                  to: "2022-12-20"
+                limit: 10
+                offset: 0
+                orderBy: "USER_ASC"
